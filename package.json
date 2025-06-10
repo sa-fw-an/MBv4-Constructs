@@ -1,19 +1,17 @@
 {
-  "name": "nodejs-typescript",
+  "name": "musicblocks-ast",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "type" : "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "node-fetch": "^3.3.1"
+    "build": "tsc",
+    "start": "node dist/test/program-test.js",
+    "dev": "ts-node test/simple-test.ts",
+    "test": "ts-node test/program-test.ts",
+    "watch": "nodemon --exec ts-node test/program-test.ts"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "tsx": "^4.7.1"
+    "@types/node": "^20.0.0",
+    "nodemon": "^3.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   }
 }
