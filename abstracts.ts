@@ -10,11 +10,8 @@ export abstract class ASTNodeBase {
 
 // Program
 export abstract class Program extends ASTNodeBase {
-  constructor(protected readonly _body: ASTNodeBase[]) {
+  constructor(public body: ASTNodeBase[]) {
     super("Program");
-  }
-  public get body(): ASTNodeBase[] {
-    return this._body;
   }
 }
 
@@ -22,22 +19,34 @@ export abstract class Program extends ASTNodeBase {
 export abstract class FunctionDeclaration extends ASTNodeBase {
   constructor(
     nodeType: TNodeType,
-    protected readonly _body: ASTNodeBase,
+    public body: ASTNodeBase
   ) {
     super(nodeType);
   }
-  public get body(): ASTNodeBase {
-    return this._body;
+}
+
+// Thread Function Declaration
+export abstract class ThreadFunctionDeclaration extends FunctionDeclaration {
+  constructor(public body: ASTNodeBase) {
+    super("ThreadFunctionDeclaration", body);
+  }
+}
+
+// Custom Function Declaration
+export abstract class CustomFunctionDeclaration extends FunctionDeclaration {
+  constructor(
+    public id: IdentifierExpression,
+    public params: IdentifierExpression[],
+    body: ASTNodeBase
+  ) {
+    super("CustomFunctionDeclaration", body);
   }
 }
 
 // Block
 export abstract class Block extends ASTNodeBase {
-  constructor(protected readonly _statements: ASTNodeBase[]) {
+  constructor(public statements: ASTNodeBase[]) {
     super("Block");
-  }
-  public get statements(): ASTNodeBase[] {
-    return this._statements;
   }
 }
 
@@ -49,12 +58,9 @@ export abstract class SimpleStatement extends Statement {}
 export abstract class CompoundStatement extends Statement {
   constructor(
     nodeType: TNodeType,
-    protected readonly _body: ASTNodeBase,
+    public body: ASTNodeBase
   ) {
     super(nodeType);
-  }
-  public get body(): ASTNodeBase {
-    return this._body;
   }
 }
 
@@ -64,112 +70,96 @@ export abstract class Expression extends ASTNodeBase {}
 export abstract class LiteralExpression extends Expression {
   constructor(
     nodeType: TNodeType,
-    protected readonly _value: number | string | boolean,
+    public value: number | string | boolean
   ) {
     super(nodeType);
   }
-  public get value(): number | string | boolean {
-    return this._value;
+}
+
+export class NumericLiteralExpression extends LiteralExpression {
+  constructor(public value: number) {
+    super("NumericLiteralExpression", value);
   }
 }
 
-export abstract class UnaryOperatorExpression extends Expression {
+export class StringLiteralExpression extends LiteralExpression {
+  constructor(public value: string) {
+    super("StringLiteralExpression", value);
+  }
+}
+
+export class BooleanLiteralExpression extends LiteralExpression {
+  constructor(public value: boolean) {
+    super("BooleanLiteralExpression", value);
+  }
+}
+
+export abstract class OperatorExpression extends Expression {
+  constructor(nodeType: TNodeType) {
+    super(nodeType);
+  }
+}
+
+export abstract class UnaryOperatorExpression extends OperatorExpression {
   constructor(
     nodeType: TNodeType,
-    protected readonly _operator: TUnaryOperator,
-    protected readonly _operand: Expression,
+    public operator: TUnaryOperator,
+    public operand: Expression
   ) {
     super(nodeType);
   }
-  public get operator(): TUnaryOperator {
-    return this._operator;
-  }
-  public get operand(): Expression {
-    return this._operand;
-  }
 }
 
-export abstract class BinaryOperatorExpression extends Expression {
+export abstract class BinaryOperatorExpression extends OperatorExpression {
   constructor(
     nodeType: TNodeType,
-    protected readonly _operator: TBinaryOperator,
-    protected readonly _left: Expression,
-    protected readonly _right: Expression,
+    public operator: TBinaryOperator,
+    public left: Expression,
+    public right: Expression
   ) {
     super(nodeType);
   }
-  public get operator(): TBinaryOperator {
-    return this._operator;
-  }
-  public get left(): Expression {
-    return this._left;
-  }
-  public get right(): Expression {
-    return this._right;
-  }
 }
 
+// Function Call
 export abstract class FunctionCallExpression extends Expression {
   constructor(
-    protected readonly _callee: Expression,
-    protected readonly _args: {
-      param: Expression;
-      value: Expression;
-    }[],
+    public callee: Expression,
+    public args: { param: Expression; value: Expression }[]
   ) {
     super("FunctionCallExpression");
   }
-  public get callee(): Expression {
-    return this._callee;
-  }
-  public get args(): { param: Expression; value: Expression }[] {
-    return this._args;
-  }
 }
 
+// Member Expression
 export abstract class MemberExpression extends Expression {
   constructor(
-    protected readonly _object: Expression,
-    protected readonly _property: Expression,
+    public object: Expression,
+    public property: Expression
   ) {
     super("MemberExpression");
   }
-  public get object(): Expression {
-    return this._object;
-  }
-  public get property(): Expression {
-    return this._property;
-  }
 }
 
+// Array Expression
 export abstract class ArrayExpression extends Expression {
-  constructor(protected readonly _elements: Expression[]) {
+  constructor(public elements: Expression[]) {
     super("ArrayExpression");
   }
-  public get elements(): Expression[] {
-    return this._elements;
-  }
 }
 
+// Dict Expression
 export abstract class DictExpression extends Expression {
   constructor(
-    protected readonly _entries: {
-      key: Expression;
-      value: Expression;
-    }[],
+    public entries: { key: Expression; value: Expression }[]
   ) {
     super("DictExpression");
   }
-  public get entries(): { key: Expression; value: Expression }[] {
-    return this._entries;
-  }
 }
 
+// Identifier Expression
 export abstract class IdentifierExpression extends Expression {
-  constructor(protected readonly _name: string) {
+  constructor(public name: string) {
     super("IdentifierExpression");
-  }
-  public get name(): string {
-    return this._name;
   }
 }
