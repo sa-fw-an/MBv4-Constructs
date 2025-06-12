@@ -7,7 +7,7 @@ export class BranchStatement extends CompoundStatement {
     super("BranchStatement", clauses[0]?.body || null as any);
   }
 
-  public get body(): ASTNodeBase {
+  public get firstClauseBody(): ASTNodeBase {
     return this.clauses[0]?.body || null as any;
   }
 }
